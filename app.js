@@ -1,7 +1,7 @@
 const app = document.querySelector("#app");
 
 const assets = {
-  logo: "assets/lotus-logo.png",
+  logo: "assets/logo.png",
   homeHero: "assets/home-hero.png",
   storeHero: "assets/store-hero.png",
   storefront: "assets/storefront-wide.png",

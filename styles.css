@@ -109,8 +109,9 @@ button:active {
 }
 
 .logo {
-  width: 32px;
-  height: 32px;
+  width: 31px;
+  height: 31px;
+  border-radius: 999px;
   object-fit: contain;
   mix-blend-mode: multiply;
 }
