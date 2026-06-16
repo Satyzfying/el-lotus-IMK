@@ -9,13 +9,11 @@ const STORAGE_KEYS = {
 };
 
 const assets = {
-  avatar: new URL("../assets/avatar.png", import.meta.url).href,
-  checkoutProduct: new URL("../assets/checkout-product.png", import.meta.url).href,
-  cup: new URL("../assets/cup.png", import.meta.url).href,
+  avatar: new URL("../assets/avatar-hd.jpg", import.meta.url).href,
+  interior: new URL("../assets/interior-hd.png", import.meta.url).href,
   logoMark: new URL("../assets/logo-only.svg", import.meta.url).href,
   qris: new URL("../assets/qris-code.png", import.meta.url).href,
-  storeHero: new URL("../assets/store-hero.png", import.meta.url).href,
-  storefront: new URL("../assets/storefront-wide.png", import.meta.url).href,
+  storefront: new URL("../assets/storefront-hd.png", import.meta.url).href,
 };
 
 const outlets = [
@@ -30,43 +28,42 @@ const products = [
     id: "hot-matcha",
     name: "Hot Matcha",
     price: 24000,
-    image: new URL("../assets/hot-matcha.png", import.meta.url).href,
-    checkoutImage: assets.checkoutProduct,
+    image: new URL("../assets/product-hot-matcha.png", import.meta.url).href,
     description: "Matcha khas el Lotus dengan perpaduan aroma matcha dan tekstur lembut.",
   },
   {
     id: "hot-cappucino",
     name: "Hot Cappuccino",
     price: 24000,
-    image: new URL("../assets/hot-cappucino.png", import.meta.url).href,
+    image: new URL("../assets/product-hot-cappuccino.png", import.meta.url).href,
     description: "Espresso hangat dengan foam lembut dan aroma kopi yang tebal.",
   },
   {
     id: "ice-cafe-latte",
     name: "Ice Cafe Latte",
     price: 26000,
-    image: new URL("../assets/ice-cafe-latte.png", import.meta.url).href,
+    image: new URL("../assets/product-ice-cafe-latte.png", import.meta.url).href,
     description: "Latte dingin dengan susu creamy dan espresso seimbang.",
   },
   {
     id: "ice-pink-matcha",
     name: "Ice Pink Matcha",
     price: 28000,
-    image: new URL("../assets/ice-pink-matcha.png", import.meta.url).href,
+    image: new URL("../assets/product-ice-pink-matcha.png", import.meta.url).href,
     description: "Matcha dingin dengan layer pink berry yang ringan dan segar.",
   },
   {
     id: "ice-matcha-latte",
     name: "Ice Matcha Latte",
     price: 30000,
-    image: new URL("../assets/ice-matcha-latte.png", import.meta.url).href,
+    image: new URL("../assets/product-ice-matcha-latte.png", import.meta.url).href,
     description: "Matcha latte dingin favorit dengan rasa creamy yang kalem.",
   },
   {
     id: "ice-americano",
     name: "Ice Americano",
     price: 22000,
-    image: new URL("../assets/ice-americano.png", import.meta.url).href,
+    image: new URL("../assets/product-ice-americano.png", import.meta.url).href,
     description: "Americano dingin yang bersih, ringan, dan cocok untuk menemani fokus.",
   },
 ];
@@ -76,19 +73,19 @@ const popularProducts = [
     id: "hot-matcha",
     name: "Matcha Lalu",
     price: 50000,
-    image: new URL("../assets/popular-matchalalu.png", import.meta.url).href,
+    image: products[0].image,
   },
   {
     id: "hot-cappucino",
     name: "Ice Cappuccino",
     price: 35000,
-    image: new URL("../assets/popular-cappucino.png", import.meta.url).href,
+    image: products[1].image,
   },
   {
     id: "ice-matcha-latte",
     name: "Ice Matcha Latte",
     price: 35000,
-    image: new URL("../assets/popular-latte.png", import.meta.url).href,
+    image: products[4].image,
   },
 ];
 
@@ -151,6 +148,7 @@ const dummyOrders = [
     items: ["Latte Lalu (Ice, Regular)", "Signature Blend, Normal Sugar"],
     total: 28000,
     active: false,
+    image: products[4].image,
   },
   {
     id: "dummy-2",
@@ -161,6 +159,7 @@ const dummyOrders = [
     items: ["Americano (Ice, Regular)", "Robusta Beans, No Sugar"],
     total: 20000,
     active: false,
+    image: products[5].image,
   },
   {
     id: "dummy-3",
@@ -171,6 +170,7 @@ const dummyOrders = [
     items: ["Cappuccino (Ice, Large)", "Oat Milk"],
     total: 30000,
     active: false,
+    image: products[1].image,
   },
   {
     id: "dummy-4",
@@ -181,6 +181,7 @@ const dummyOrders = [
     items: ["Vanilla Milkshake (Ice, Large)", "Normal Sugar"],
     total: 20000,
     active: false,
+    image: products[3].image,
   },
 ];
 
@@ -371,7 +372,7 @@ function App() {
       id: `${product.id}-${Date.now()}`,
       productId: product.id,
       name: product.name,
-      image: product.checkoutImage || product.image,
+      image: product.image,
       outlet: selectedOutlet,
       unitPrice: detailUnitPrice,
       quantity: detail.quantity,
@@ -431,6 +432,7 @@ function App() {
       ]),
       total: cartTotal,
       active: true,
+      image: cart[0]?.image || products[0].image,
     };
 
     setOrders((current) => [order, ...current]);
@@ -646,6 +648,7 @@ function HomeScreen({ cartCount, goTo, handleQuickAction, openProductDetail, pus
       </section>
 
       <section className="home-hero" aria-label="Tagline el Lotus">
+        <img className="home-hero-bg" src={assets.interior} alt="" aria-hidden="true" />
         <div className="home-hero-copy">
           <span>fresh mood, fresh cup</span>
           <h2>Ngopi biar mekar.</h2>
@@ -654,10 +657,6 @@ function HomeScreen({ cartCount, goTo, handleQuickAction, openProductDetail, pus
             <span>Mulai pesan</span>
             <span aria-hidden="true">{"\u203A"}</span>
           </button>
-        </div>
-        <div className="hero-mark" aria-hidden="true">
-          <img src={assets.logoMark} alt="" />
-          <span>Lotus<br />mood</span>
         </div>
       </section>
       <div className="slider-dots" aria-hidden="true"><span className="active" /><span /><span /></div>
@@ -732,7 +731,7 @@ function OrderScreen({ selectedOutlet, outletOpen, setOutletOpen, selectOutlet, 
         )}
       </div>
 
-      <img className="store-hero" src={assets.storeHero} alt="Tampak depan outlet el Lotus" />
+      <img className="store-hero" src={assets.storefront} alt="Tampak depan outlet el Lotus" />
 
       <div className="menu-title">
         <div>
@@ -926,7 +925,7 @@ function CheckoutScreen({ selectedOutlet, cart, cartSubtotal, deliveryFee, servi
 function EmptyCart({ goTo }) {
   return (
     <section className="empty-cart">
-      <img src={assets.cup} alt="" />
+      <img src={products[0].image} alt="" />
       <h2>Cart masih kosong</h2>
       <p>Pilih menu favoritmu dulu, lalu ringkasan pesanan akan muncul di sini.</p>
       <button onClick={() => goTo("order")}>Pilih Menu</button>
@@ -1081,7 +1080,7 @@ function ActivityScreen({ orders, activityTab, setActivityTab, goTo, pushToast }
         </div>
       ) : (
         <section className="empty-activity">
-          <img src={assets.cup} alt="" />
+          <img src={products[0].image} alt="" />
           <h2>Belum ada pesanan aktif</h2>
           <p>Setelah pembayaran berhasil, status pesananmu akan muncul di sini.</p>
           <button onClick={() => goTo("order")}>Pesan Sekarang</button>
@@ -1094,7 +1093,7 @@ function ActivityScreen({ orders, activityTab, setActivityTab, goTo, pushToast }
 function OrderCard({ order, pushToast }) {
   return (
     <article className="order-card">
-      <img src={assets.cup} alt="Cup el Lotus" />
+      <img src={order.image || products[0].image} alt="Produk el Lotus" />
       <div className="order-copy">
         <div className="order-title">
           <h2>{order.outlet}</h2>
