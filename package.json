@@ -4,10 +4,10 @@
   "private": true,
   "description": "Mobile interactive prototype for el Lotus IMK project.",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "start": "vite --host 0.0.0.0",
+    "dev": "vite",
+    "start": "vite",
     "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0",
+    "preview": "vite preview",
     "check": "npm run build"
   },
   "dependencies": {
