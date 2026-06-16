@@ -332,6 +332,18 @@ export default function App() {
     pushToast("Link QRIS demo berhasil disiapkan untuk dibagikan.");
   };
 
+  const completeOrderFromActivity = (orderId) => {
+    setOrders((current) =>
+      current.map((order) =>
+        order.id === orderId
+          ? { ...order, active: false, status: "Selesai" }
+          : order,
+      ),
+    );
+    setActivityTab("history");
+    pushToast("Pesanan selesai dan masuk ke Riwayat.");
+  };
+
   const logoutDemo = () => {
     setCart([]);
     setSelectedPromo("");
@@ -461,9 +473,10 @@ export default function App() {
         setActivityTab={setActivityTab}
         goTo={goTo}
         openModal={openModal}
+        completeOrder={completeOrderFromActivity}
       />,
     );
   }
 
-  return chrome(<ProfileScreen openModal={openModal} />);
+  return chrome(<ProfileScreen openModal={openModal} orders={orders} goTo={goTo} setActivityTab={setActivityTab} />);
 }

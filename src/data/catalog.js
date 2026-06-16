@@ -196,7 +196,7 @@ export const dummyOrders = [
     outlet: "el Lotus MERR Surabaya",
     date: "24 Apr 2026",
     time: "16:54",
-    status: "Sudah Diproses",
+    status: "Selesai",
     items: ["Latte Lalu (Ice, Regular)", "Signature Blend, Normal Sugar"],
     total: 28000,
     active: false,

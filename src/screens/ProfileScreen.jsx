@@ -1,7 +1,21 @@
 import { Icon } from "../components/Icon.jsx";
 import { assets, profileUser } from "../data/catalog.js";
 
-export function ProfileScreen({ openModal }) {
+export function ProfileScreen({ openModal, orders = [], goTo, setActivityTab }) {
+  const activeOrders = orders.filter((order) => order.active);
+  const latestOrder = activeOrders[0] || orders[0] || null;
+  const progressIndex = getProgressIndex(latestOrder);
+  const openActivity = (tab) => {
+    setActivityTab(tab);
+    goTo("activity");
+  };
+  const steps = [
+    ["Placed", "check"],
+    ["Preparing", "clock"],
+    ["On the way", "truck"],
+    ["Delivered", "heart"],
+  ];
+
   return (
     <section className="screen profile-screen">
       <img className="profile-hero" src={assets.storefront} alt="Storefront el Lotus" />
@@ -22,17 +36,26 @@ export function ProfileScreen({ openModal }) {
       <section className="profile-section">
         <h2>Pesanan Saya</h2>
         <div className="progress-track" aria-label="Progress pesanan">
-          {[
-            ["Placed", "check"],
-            ["Preparing", "clock"],
-            ["On the way", "truck"],
-            ["Delivered", "heart"],
-          ].map(([label, symbol]) => (
-            <div key={label}>
+          {steps.map(([label, symbol], index) => (
+            <button
+              className={`progress-step ${index <= progressIndex ? "completed" : ""} ${index === progressIndex ? "current" : ""}`}
+              key={label}
+              onClick={() => openActivity(index === steps.length - 1 ? "history" : "active")}
+              aria-label={`Buka pesanan ${label}`}
+            >
               <span><Icon name={symbol} /></span>
               <small>{label}</small>
-            </div>
+            </button>
           ))}
+        </div>
+        <div className="profile-order-summary">
+          <div>
+            <strong>{activeOrders.length ? `${activeOrders.length} pesanan aktif` : "Tidak ada pesanan aktif"}</strong>
+            <span>{latestOrder ? `${latestOrder.outlet} - ${latestOrder.status}` : "Mulai pesan untuk melihat progress di sini."}</span>
+          </div>
+          <button onClick={() => openActivity(activeOrders.length ? "active" : "history")}>
+            {activeOrders.length ? "Lihat Aktif" : "Lihat Riwayat"}
+          </button>
         </div>
       </section>
 
@@ -53,6 +76,17 @@ export function ProfileScreen({ openModal }) {
       </button>
     </section>
   );
+}
+
+function getProgressIndex(order) {
+  if (!order) return -1;
+  const status = order.status.toLowerCase();
+
+  if (status.includes("selesai") || status.includes("delivered")) return 3;
+  if (status.includes("jalan") || status.includes("way")) return 2;
+  if (status.includes("proses") || status.includes("preparing")) return 1;
+
+  return 0;
 }
 
 function ProfileMenu({ title, rows, openModal }) {

@@ -2,9 +2,9 @@ import { Icon } from "../components/Icon.jsx";
 import { dummyOrders, products } from "../data/catalog.js";
 import { rupiah } from "../utils/format.js";
 
-export function ActivityScreen({ orders, activityTab, setActivityTab, goTo, openModal }) {
+export function ActivityScreen({ orders, activityTab, setActivityTab, goTo, openModal, completeOrder }) {
   const activeOrders = orders.filter((order) => order.active);
-  const historyRows = [...orders, ...dummyOrders];
+  const historyRows = [...orders.filter((order) => !order.active), ...dummyOrders];
   const rows = activityTab === "active" ? activeOrders : historyRows;
 
   return (
@@ -39,7 +39,7 @@ export function ActivityScreen({ orders, activityTab, setActivityTab, goTo, open
 
       {rows.length ? (
         <div className="order-list">
-          {rows.map((order) => <OrderCard key={order.id} order={order} openModal={openModal} />)}
+          {rows.map((order) => <OrderCard key={order.id} order={order} openModal={openModal} completeOrder={completeOrder} />)}
         </div>
       ) : (
         <section className="empty-activity">
@@ -53,7 +53,7 @@ export function ActivityScreen({ orders, activityTab, setActivityTab, goTo, open
   );
 }
 
-function OrderCard({ order, openModal }) {
+function OrderCard({ order, openModal, completeOrder }) {
   const isDone = order.status.toLowerCase().includes("selesai");
   const itemPreview = order.items.slice(0, 3);
 
@@ -86,7 +86,10 @@ function OrderCard({ order, openModal }) {
             <span>Total</span>
             <strong>{rupiah(order.total)}</strong>
           </div>
-          <button onClick={() => openModal("orderDetail", { order })}>Lihat Detail</button>
+          <div className="order-actions">
+            {!isDone && order.active && <button className="order-done-button" onClick={() => completeOrder(order.id)}>Pesanan Diterima</button>}
+            <button onClick={() => openModal("orderDetail", { order })}>Lihat Detail</button>
+          </div>
         </div>
       </div>
     </article>
