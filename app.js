@@ -2,7 +2,7 @@ const app = document.querySelector("#app");
 
 const assets = {
   logo: "assets/logo.png",
-  homeHero: "assets/home-hero.png",
+  homeHero: "assets/store-hero.png",
   storeHero: "assets/store-hero.png",
   storefront: "assets/storefront-wide.png",
   qris: "assets/qris-code.png",
@@ -208,8 +208,8 @@ function renderHome() {
 
       <section class="promo">
         <div class="tiny-logo">&#10047; el Lotus</div>
-        <h2>earn points, bloom more!</h2>
-        <p>air, air apa yang semangat? airobik xixixi</p>
+        <h2>Bloom rewards await</h2>
+        <p>Kumpulkan poin dari setiap pesanan dan tukarkan dengan benefit el Lotus.</p>
         <button onclick="applyPromoFromHome()" aria-label="Lihat promo">&rsaquo;</button>
       </section>
 

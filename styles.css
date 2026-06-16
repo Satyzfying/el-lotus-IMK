@@ -213,10 +213,10 @@ button:active {
 }
 
 .home-hero-content h2 {
-  width: 190px;
+  width: 205px;
   margin: 0 0 18px;
-  font-size: 22px;
-  line-height: 1.08;
+  font-size: 21px;
+  line-height: 1.12;
 }
 
 .pill-button {
@@ -302,7 +302,7 @@ button:active {
   background: #171512;
   color: #fff;
   margin: 0 0 16px;
-  padding: 18px 17px 14px 146px;
+  padding: 18px 72px 14px 146px;
   position: relative;
   overflow: hidden;
 }
@@ -326,14 +326,15 @@ button:active {
 
 .promo h2 {
   margin: 0 0 7px;
-  font-size: 17px;
+  font-size: 18px;
+  line-height: 1.05;
 }
 
 .promo p {
-  width: 160px;
+  width: 142px;
   margin: 0;
-  font-size: 11px;
-  line-height: 1.08;
+  font-size: 10px;
+  line-height: 1.2;
 }
 
 .promo button {
