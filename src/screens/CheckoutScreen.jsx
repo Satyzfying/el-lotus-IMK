@@ -71,7 +71,10 @@ export function CheckoutScreen({
       </section>
 
       <div className="checkout-actions">
-        <button className="square-action" onClick={() => goTo("order")} aria-label="Kembali ke menu"><Icon name="arrowLeft" /></button>
+        <button className="secondary-action" onClick={() => goTo("order")}>
+          <Icon name="arrowLeft" />
+          {isEmpty ? "Pilih Menu" : "Kembali ke Pesanan"}
+        </button>
         <button className="wide-action" onClick={() => goTo("payment")} disabled={isEmpty}>Lanjut Pembayaran</button>
       </div>
     </>

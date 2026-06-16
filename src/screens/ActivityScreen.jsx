@@ -4,7 +4,8 @@ import { rupiah } from "../utils/format.js";
 
 export function ActivityScreen({ orders, activityTab, setActivityTab, goTo, openModal }) {
   const activeOrders = orders.filter((order) => order.active);
-  const rows = activityTab === "active" ? activeOrders : [...orders, ...dummyOrders];
+  const historyRows = [...orders, ...dummyOrders];
+  const rows = activityTab === "active" ? activeOrders : historyRows;
 
   return (
     <section className="screen activity-screen">
@@ -13,11 +14,27 @@ export function ActivityScreen({ orders, activityTab, setActivityTab, goTo, open
         <button className="round-button" onClick={() => openModal("notifications")} aria-label="Notifikasi"><Icon name="bell" /></button>
       </header>
 
-      <h1 className="page-title">Aktivitas</h1>
+      <section className="activity-hero" aria-labelledby="activity-title">
+        <div>
+          <span>Order tracking</span>
+          <h1 id="activity-title">Aktivitas</h1>
+          <p>{activeOrders.length ? "Pesananmu sedang bergerak. Cek statusnya di sini." : "Riwayat dan status pesanan el Lotus tersimpan rapi di sini."}</p>
+        </div>
+        <div className="activity-count">
+          <strong>{activeOrders.length}</strong>
+          <small>aktif</small>
+        </div>
+      </section>
 
       <div className="activity-tabs" role="tablist" aria-label="Filter aktivitas">
-        <button className={activityTab === "active" ? "active" : ""} onClick={() => setActivityTab("active")} role="tab">Aktif</button>
-        <button className={activityTab === "history" ? "active" : ""} onClick={() => setActivityTab("history")} role="tab">Riwayat</button>
+        <button className={activityTab === "active" ? "active" : ""} onClick={() => setActivityTab("active")} role="tab" aria-selected={activityTab === "active"}>
+          <span>Aktif</span>
+          <small>{activeOrders.length}</small>
+        </button>
+        <button className={activityTab === "history" ? "active" : ""} onClick={() => setActivityTab("history")} role="tab" aria-selected={activityTab === "history"}>
+          <span>Riwayat</span>
+          <small>{historyRows.length}</small>
+        </button>
       </div>
 
       {rows.length ? (
@@ -37,21 +54,38 @@ export function ActivityScreen({ orders, activityTab, setActivityTab, goTo, open
 }
 
 function OrderCard({ order, openModal }) {
+  const isDone = order.status.toLowerCase().includes("selesai");
+  const itemPreview = order.items.slice(0, 3);
+
   return (
-    <article className="order-card">
-      <img src={order.image || products[0].image} alt="Produk el Lotus" />
-      <div className="order-copy">
-        <div className="order-title">
-          <h2>{order.outlet}</h2>
-          <span><Icon name="clock" /> {order.status}</span>
+    <article className={`order-card ${isDone ? "is-done" : "is-active"}`}>
+      <div className="order-card-top">
+        <div className="order-thumb">
+          <img src={order.image || products[0].image} alt="Produk el Lotus" />
+          <span><Icon name={isDone ? "check" : "truck"} /></span>
         </div>
-        <p>{order.date} - {order.time}</p>
-        <ul>
-          {order.items.map((item) => <li key={item}>{item}</li>)}
-        </ul>
+        <div className="order-title">
+          <span className="order-status"><Icon name="clock" /> {order.status}</span>
+          <h2>{order.outlet}</h2>
+          <p>{order.date} - {order.time}</p>
+        </div>
+      </div>
+
+      <div className={`order-flow ${isDone ? "complete" : ""}`} aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+
+      <div className="order-copy">
+        <div className="order-items">
+          {itemPreview.map((item) => <span key={item}>{item}</span>)}
+        </div>
         <div className="order-total">
-          <span>Total</span>
-          <strong>{rupiah(order.total)}</strong>
+          <div>
+            <span>Total</span>
+            <strong>{rupiah(order.total)}</strong>
+          </div>
           <button onClick={() => openModal("orderDetail", { order })}>Lihat Detail</button>
         </div>
       </div>

@@ -1,9 +1,19 @@
+import { Icon } from "../components/Icon.jsx";
 import { assets, outlets, products } from "../data/catalog.js";
 import { rupiah, shortOutlet } from "../utils/format.js";
 
-export function OrderScreen({ selectedOutlet, outletOpen, setOutletOpen, selectOutlet, openProductDetail }) {
+export function OrderScreen({
+  selectedOutlet,
+  outletOpen,
+  setOutletOpen,
+  selectOutlet,
+  openProductDetail,
+  cartCount,
+  cartTotal,
+  goTo,
+}) {
   return (
-    <section className="screen order-screen">
+    <section className={`screen order-screen ${cartCount ? "has-floating-cart" : ""}`}>
       <header className="order-top">
         <span>Pick your spot</span>
         <h1>Pesan dari outlet terdekat.</h1>
@@ -60,6 +70,19 @@ export function OrderScreen({ selectedOutlet, outletOpen, setOutletOpen, selectO
           </article>
         ))}
       </div>
+
+      {cartCount > 0 && (
+        <aside className="floating-cart-return" aria-label="Ringkasan keranjang">
+          <div>
+            <strong>{cartCount} item di keranjang</strong>
+            <span>{rupiah(cartTotal)}</span>
+          </div>
+          <button onClick={() => goTo("checkout")}>
+            <Icon name="cart" />
+            Kembali ke Checkout
+          </button>
+        </aside>
+      )}
     </section>
   );
 }

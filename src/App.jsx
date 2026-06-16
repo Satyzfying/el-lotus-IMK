@@ -383,6 +383,9 @@ export default function App() {
         setOutletOpen={setOutletOpen}
         selectOutlet={selectOutlet}
         openProductDetail={openProductDetail}
+        cartCount={cartCount}
+        cartTotal={cartTotal}
+        goTo={goTo}
       />,
     );
   }
