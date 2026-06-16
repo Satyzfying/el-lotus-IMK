@@ -276,28 +276,31 @@ svg {
 
 .home-hero {
   position: relative;
-  display: flex;
-  min-height: 228px;
-  align-items: center;
+  height: 236px;
   overflow: hidden;
-  padding: 24px;
   border: 1px solid rgba(234, 217, 185, 0.72);
   border-radius: 24px;
   background: #3b271b;
   box-shadow: var(--shadow);
+  touch-action: pan-y;
+  user-select: none;
 }
 
-.home-hero::before {
+.home-hero-slide::before {
   position: absolute;
+  z-index: 1;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(31, 20, 13, 0.9), rgba(58, 36, 22, 0.72) 46%, rgba(65, 40, 24, 0.22)),
-    radial-gradient(circle at 82% 18%, rgba(255, 213, 111, 0.28), transparent 8rem);
+    linear-gradient(90deg, rgba(31, 20, 13, 0.92), rgba(58, 36, 22, 0.74) 48%, rgba(65, 40, 24, 0.36)),
+    linear-gradient(180deg, rgba(31, 20, 13, 0.18), rgba(31, 20, 13, 0.18)),
+    radial-gradient(circle at 82% 18%, rgba(255, 213, 111, 0.22), transparent 8rem);
   content: "";
+  pointer-events: none;
 }
 
 .home-hero::after {
   position: absolute;
+  z-index: 3;
   inset: 12px;
   border: 1px solid rgba(255, 253, 243, 0.18);
   border-radius: 18px;
@@ -305,8 +308,33 @@ svg {
   pointer-events: none;
 }
 
+.home-hero-track {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  height: 100%;
+  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.home-hero-track.dragging {
+  transition: none;
+}
+
+.home-hero-slide {
+  position: relative;
+  display: flex;
+  height: 100%;
+  min-width: 100%;
+  flex: 0 0 100%;
+  align-items: end;
+  overflow: hidden;
+  padding: 20px 22px 26px;
+}
+
 .home-hero-bg {
   position: absolute;
+  z-index: 0;
   inset: 0;
   width: 100%;
   height: 100%;
@@ -314,6 +342,15 @@ svg {
   object-position: 53% 54%;
   opacity: 0.66;
   animation: hero-fade 420ms ease both;
+  pointer-events: none;
+}
+
+.home-hero-slide.storefront .home-hero-bg {
+  object-position: 60% 50%;
+}
+
+.home-hero-slide.matcha .home-hero-bg {
+  object-position: 58% 56%;
 }
 
 @keyframes hero-fade {
@@ -331,7 +368,7 @@ svg {
 .home-hero-copy {
   position: relative;
   z-index: 2;
-  width: min(100%, 250px);
+  width: min(100%, 238px);
   min-width: 0;
   color: #fff9e9;
 }
@@ -354,30 +391,34 @@ svg {
 
 .home-hero-copy > span {
   display: inline-flex;
+  max-width: 100%;
   align-items: center;
   min-height: 24px;
   padding: 0 10px;
+  overflow: hidden;
   border: 1px solid rgba(255, 248, 232, 0.42);
   border-radius: 999px;
   background: rgba(31, 20, 13, 0.76);
   color: #fff6cf;
   font-size: 11px;
   font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.48);
 }
 
 .home-hero-copy h2 {
-  max-width: 220px;
-  margin: 12px 0 8px;
-  font-size: 32px;
-  line-height: 0.98;
+  max-width: 214px;
+  margin: 10px 0 7px;
+  font-size: 29px;
+  line-height: 1.02;
   letter-spacing: 0;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.54);
 }
 
 .home-hero-copy p {
-  max-width: 218px;
-  margin: 0 0 18px;
+  max-width: 214px;
+  margin: 0 0 16px;
   color: rgba(255, 249, 232, 0.96);
   font-size: 13px;
   font-weight: 650;
@@ -2916,12 +2957,15 @@ svg {
   }
 
   .home-hero {
-    min-height: 204px;
-    padding-left: 18px;
+    height: 218px;
+  }
+
+  .home-hero-slide {
+    padding: 18px 18px 24px;
   }
 
   .home-hero-copy h2 {
-    font-size: 29px;
+    font-size: 27px;
   }
 
   .quick-grid {
@@ -3023,9 +3067,12 @@ svg {
   }
 
   .home-hero {
-    min-height: 190px;
-    padding: 16px;
+    height: 210px;
     border-radius: 20px;
+  }
+
+  .home-hero-slide {
+    padding: 16px 16px 22px;
   }
 
   .home-hero::after {
@@ -3033,8 +3080,8 @@ svg {
   }
 
   .home-hero-copy h2 {
-    max-width: 190px;
-    font-size: 27px;
+    max-width: 188px;
+    font-size: 25px;
   }
 
   .quick-grid {
