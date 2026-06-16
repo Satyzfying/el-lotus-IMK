@@ -1,0 +1,11 @@
+{
+  "name": "el-lotus-imk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mobile interactive prototype for el Lotus IMK project.",
+  "scripts": {
+    "dev": "node dev-server.js",
+    "start": "node dev-server.js",
+    "check": "node --check app.js && node --check dev-server.js"
+  }
+}
