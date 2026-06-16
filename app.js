@@ -37,14 +37,14 @@ const branchMenus = {
   "el Lotus Perumdos ITS": ["hot-matcha", "hot-cappucino", "ice-pink-matcha", "ice-matcha-latte"],
 };
 const paymentMethods = [
-  { id: "qris", label: "QRIS", caption: "Scan atau bagikan QR code" },
+  { id: "qris", label: "QRIS", caption: "Pindai atau bagikan kode QR" },
   { id: "ewallet", label: "E-Wallet", caption: "GoPay, OVO, Dana" },
   { id: "va", label: "Virtual Account", caption: "Transfer bank otomatis" },
   { id: "card", label: "Kartu Debit/Kredit", caption: "Visa atau Mastercard" },
 ];
 const brandCopy = {
-  intro: "A simple, calm, and Gen-Z friendly cafe ordering experience.",
-  profile: "A place for interaction, comfort, and experience.",
+  intro: "Pesan kopi favoritmu dengan alur yang sederhana dan nyaman.",
+  profile: "Ruang untuk menikmati kopi, beristirahat, dan terhubung.",
 };
 const state = {
   view: "loading",
@@ -69,6 +69,7 @@ const state = {
   activityMode: "active",
   toast: "",
   locationError: false,
+  cart: null,
   orders: [],
 };
 
@@ -77,6 +78,7 @@ const selectedOutlet = () => state.location !== "Pilih Lokasi";
 const deliveryFee = () => 10000;
 const promoDiscount = () => (state.promoApplied ? 8000 : 0);
 const grandTotal = () => Math.max(0, totalProduct() + deliveryFee() - promoDiscount());
+const cartTotal = () => (state.cart ? Math.max(0, state.cart.subtotal + deliveryFee() - (state.cart.promoApplied ? 8000 : 0)) : 0);
 const escapeHtml = (value) => value.replace(/[&<>"']/g, (char) => ({
   "&": "&amp;",
   "<": "&lt;",
@@ -139,6 +141,19 @@ function toastMarkup() {
   return state.toast ? `<div class="toast">${state.toast}</div>` : "";
 }
 
+function cartMarkup() {
+  if (!state.cart || state.view !== "main") return "";
+  return `
+    <div class="mini-cart">
+      <div>
+        <strong>${state.cart.qty} item</strong>
+        <span>${state.cart.name} &bull; ${rupiah(cartTotal())}</span>
+      </div>
+      <button onclick="openCartSummary()">Lihat</button>
+    </div>
+  `;
+}
+
 function nav() {
   return `
     <nav class="bottom-nav">
@@ -148,7 +163,7 @@ function nav() {
         ["activity", "Aktivitas", "clock"],
         ["profile", "Profil", "user"],
       ].map(([tab, label, symbol]) => `
-        <button class="nav-item ${state.tab === tab ? "active" : ""}" onclick="setTab('${tab}')">
+        <button class="nav-item ${state.tab === tab ? "active" : ""} ${tab === "order" && state.cart ? "has-cart" : ""}" onclick="setTab('${tab}')">
           ${icon(symbol)}<span>${label}</span>
         </button>
       `).join("")}
@@ -180,7 +195,7 @@ function renderHome() {
       </header>
 
       <div class="hello">
-        <h1>hey, good to see you!</h1>
+        <h1>Selamat datang di el Lotus</h1>
         <p>${brandCopy.intro}</p>
       </div>
 
@@ -188,17 +203,17 @@ function renderHome() {
         <img src="${assets.homeHero}" alt="Interior el Lotus" />
         <div class="home-hero-content">
           <h2>&ldquo;a place to bloom, chill, and connect&rdquo;</h2>
-          <button class="pill-button" onclick="setTab('order')">explore el Lotus &rsaquo;</button>
+          <button class="pill-button" onclick="setTab('order')">Mulai Pesan &rsaquo;</button>
         </div>
       </section>
       <div class="dots"><span class="active"></span><span></span><span></span></div>
 
       <div class="quick-grid">
         ${[
-          ["cup", "order", "pickup / dine-in", "order"],
-          ["bag", "order ahead", "skip the queue", "order"],
-          ["ticket", "promos", "special for you", "profile"],
-          ["pin", "find us", "our location", "order"],
+          ["cup", "Pesan", "pickup / dine-in", "order"],
+          ["bag", "Ambil Nanti", "tanpa antre", "order"],
+          ["ticket", "Promo", "khusus untukmu", "profile"],
+          ["pin", "Outlet", "lokasi terdekat", "order"],
         ].map(([symbol, title, text, target]) => `
           <button class="quick-card" onclick="setTab('${target}')">
             ${icon(symbol)}<div><strong>${title}</strong><span>${text}</span></div>
@@ -208,12 +223,12 @@ function renderHome() {
 
       <section class="promo">
         <div class="tiny-logo">&#10047; el Lotus</div>
-        <h2>Bloom rewards await</h2>
-        <p>Kumpulkan poin dari setiap pesanan dan tukarkan dengan benefit el Lotus.</p>
+        <h2>Rewards el Lotus</h2>
+        <p>Dapatkan poin dari setiap transaksi dan tukarkan saat checkout.</p>
         <button onclick="applyPromoFromHome()" aria-label="Lihat promo">&rsaquo;</button>
       </section>
 
-      <div class="section-title"><h2>popular picks</h2><button onclick="setTab('order')">see all &rsaquo;</button></div>
+      <div class="section-title"><h2>Pilihan Populer</h2><button onclick="setTab('order')">Lihat semua &rsaquo;</button></div>
       <div class="popular-grid">
         ${popular.map((item, index) => `
           <button class="popular-card" onclick="openDetail('${menus[index % menus.length].id}')">
@@ -225,6 +240,7 @@ function renderHome() {
       </div>
     </section>
     ${nav()}
+    ${cartMarkup()}
     ${toastMarkup()}
   `;
 }
@@ -239,7 +255,7 @@ function renderMenu() {
           ${outlets.map((outlet) => `<button onclick="chooseLocation('${outlet}')">${outlet}</button>`).join("")}
         </div>` : ""}
       </div>
-      ${selectedOutlet() ? `<div class="branch-chip">Menu tersedia di ${state.location.replace("el Lotus ", "")}</div>` : ""}
+      ${selectedOutlet() ? `<div class="branch-chip">Menu tersedia di ${state.location.replace("el Lotus ", "")}</div>` : `<div class="location-helper">Pilih outlet untuk menampilkan menu yang tersedia.</div>`}
       <div class="hero-photo"><img src="${assets.storeHero}" alt="Outlet el Lotus" /></div>
       <h1 class="menu-title">Menu el Lotus <img src="${assets.logo}" alt="" /></h1>
       <div class="menu-grid">
@@ -253,6 +269,7 @@ function renderMenu() {
       </div>
     </section>
     ${nav()}
+    ${cartMarkup()}
     ${toastMarkup()}
   `;
 }
@@ -280,7 +297,8 @@ function requireLocation() {
 
 function applyPromoFromHome() {
   state.promoApplied = true;
-  flash("Promo ongkir 8rb siap dipakai.");
+  if (state.cart) state.cart.promoApplied = true;
+  flash("Promo ongkir Rp8.000 siap digunakan.");
 }
 
 function openDetail(id) {
@@ -317,7 +335,7 @@ function renderDetail() {
       <div class="qty">${state.qty}</div>
       <button class="qty-btn" onclick="changeQty(1)">+</button>
       <button class="back-small" onclick="setTab('order')" aria-label="Kembali">&lsaquo;</button>
-      <button class="primary-action" onclick="goCheckout()">+ ${rupiah(totalProduct())}</button>
+      <button class="primary-action" onclick="goCheckout()">Tambah &bull; ${rupiah(totalProduct())}</button>
     </div>
     ${toastMarkup()}
   `;
@@ -373,8 +391,41 @@ function totalProduct() {
 
 function goCheckout() {
   if (!requireLocation()) return;
+  state.cart = createCartSnapshot();
   state.view = "checkout";
   flash("Produk ditambahkan ke ringkasan pesanan.");
+}
+
+function createCartSnapshot() {
+  return {
+    id: state.selectedMenu.id,
+    name: state.selectedMenu.name,
+    img: state.selectedMenu.img,
+    qty: state.qty,
+    size: state.size,
+    sweetness: state.sweetness,
+    ice: state.ice,
+    topping: state.topping,
+    note: state.note,
+    subtotal: totalProduct(),
+    outlet: state.location,
+    promoApplied: state.promoApplied,
+  };
+}
+
+function openCartSummary() {
+  if (!state.cart) return;
+  state.selectedMenu = menus.find((item) => item.id === state.cart.id) || state.selectedMenu;
+  state.qty = state.cart.qty;
+  state.size = state.cart.size;
+  state.sweetness = state.cart.sweetness;
+  state.ice = state.cart.ice;
+  state.topping = state.cart.topping;
+  state.note = state.cart.note;
+  state.location = state.cart.outlet;
+  state.promoApplied = state.cart.promoApplied;
+  state.view = "checkout";
+  render();
 }
 
 function renderCheckout() {
@@ -384,7 +435,7 @@ function renderCheckout() {
   app.innerHTML = `
     <section class="screen no-nav checkout-screen">
       <div class="profile-hero-wrap"><img class="profile-hero" src="${assets.storefront}" alt="Outlet el Lotus" /></div>
-      <div class="checkout-card checkout-row"><h2>Delivery</h2><button class="change">Ganti</button></div>
+      <div class="checkout-card checkout-row"><h2>Pengantaran</h2><button class="change">Ganti</button></div>
       <div class="checkout-card checkout-row"><p><strong>Alamat Pengantaran</strong><br />Jl. Simo Pomahan Baru</p><button class="change">Ganti</button></div>
       <div class="checkout-card checkout-product">
         <div>
@@ -429,7 +480,7 @@ function renderPayment() {
     <section class="screen no-nav payment-screen">
       <div class="payment-top">
         <button class="plain-back" onclick="state.view='checkout';render()">${icon("arrow")}</button>
-        <h1>Payment Methode</h1>
+        <h1>Metode Pembayaran</h1>
       </div>
       <div class="payment-list">
         ${paymentMethods.map((method) => `
@@ -459,16 +510,16 @@ function payNow() {
 function renderQris() {
   app.innerHTML = `
     <section class="screen no-nav qris-screen">
-      <h1>Payment Methode</h1>
+      <h1>Metode Pembayaran</h1>
       <div class="qris-label">QRIS</div>
       <div class="qris-card">
-        <h2>Scan atau unduh QR code</h2>
+        <h2>Pindai atau unduh kode QR</h2>
         <img src="${assets.qris}" alt="QRIS" />
       </div>
       <div class="countdown-card"><div>Selesaikan pembayaran dalam<strong>00:30:00</strong></div></div>
       <div class="qris-total"><strong>Total Pembayaran</strong><strong>${rupiah(grandTotal())}</strong></div>
-      <button class="qris-primary" onclick="finishPayment()">Unduh QR code</button>
-      <button class="qris-secondary" onclick="finishPayment()">Bagikan QR Code</button>
+      <button class="qris-primary" onclick="finishPayment()">Unduh kode QR</button>
+      <button class="qris-secondary" onclick="finishPayment()">Bagikan kode QR</button>
     </section>
   `;
 }
@@ -484,6 +535,7 @@ function finishPayment() {
     total: grandTotal(),
     active: true,
   });
+  state.cart = null;
   resetOrderOptions();
   state.view = "success";
   render();
@@ -612,6 +664,7 @@ window.payNow = payNow;
 window.finishPayment = finishPayment;
 window.applyPromoFromHome = applyPromoFromHome;
 window.setActivityMode = setActivityMode;
+window.openCartSummary = openCartSummary;
 
 render();
 window.setTimeout(() => {
