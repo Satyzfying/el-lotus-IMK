@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import "../styles.css";
+import "./styles.css";
 
 const STORAGE_KEYS = {
   cart: "elLotus.cart",
@@ -8,18 +8,14 @@ const STORAGE_KEYS = {
   orders: "elLotus.orders",
 };
 
-const assetUrl = (path) => new URL(`../assets/${path}`, import.meta.url).href;
-
 const assets = {
-  avatar: assetUrl("avatar.png"),
-  checkoutProduct: assetUrl("checkout-product.png"),
-  cup: assetUrl("cup.png"),
-  detailMatcha: assetUrl("detail-hot-matcha.png"),
-  homeHero: assetUrl("home-hero.png"),
-  logo: assetUrl("logo.svg"),
-  qris: assetUrl("qris-code.png"),
-  storeHero: assetUrl("store-hero.png"),
-  storefront: assetUrl("storefront-wide.png"),
+  avatar: new URL("../assets/avatar.png", import.meta.url).href,
+  checkoutProduct: new URL("../assets/checkout-product.png", import.meta.url).href,
+  cup: new URL("../assets/cup.png", import.meta.url).href,
+  logoMark: new URL("../assets/logo-only.svg", import.meta.url).href,
+  qris: new URL("../assets/qris-code.png", import.meta.url).href,
+  storeHero: new URL("../assets/store-hero.png", import.meta.url).href,
+  storefront: new URL("../assets/storefront-wide.png", import.meta.url).href,
 };
 
 const outlets = [
@@ -34,8 +30,7 @@ const products = [
     id: "hot-matcha",
     name: "Hot Matcha",
     price: 24000,
-    image: assetUrl("hot-matcha.png"),
-    detailImage: assets.detailMatcha,
+    image: new URL("../assets/hot-matcha.png", import.meta.url).href,
     checkoutImage: assets.checkoutProduct,
     description: "Matcha khas el Lotus dengan perpaduan aroma matcha dan tekstur lembut.",
   },
@@ -43,35 +38,35 @@ const products = [
     id: "hot-cappucino",
     name: "Hot Cappuccino",
     price: 24000,
-    image: assetUrl("hot-cappucino.png"),
+    image: new URL("../assets/hot-cappucino.png", import.meta.url).href,
     description: "Espresso hangat dengan foam lembut dan aroma kopi yang tebal.",
   },
   {
     id: "ice-cafe-latte",
     name: "Ice Cafe Latte",
     price: 26000,
-    image: assetUrl("ice-cafe-latte.png"),
+    image: new URL("../assets/ice-cafe-latte.png", import.meta.url).href,
     description: "Latte dingin dengan susu creamy dan espresso seimbang.",
   },
   {
     id: "ice-pink-matcha",
     name: "Ice Pink Matcha",
     price: 28000,
-    image: assetUrl("ice-pink-matcha.png"),
+    image: new URL("../assets/ice-pink-matcha.png", import.meta.url).href,
     description: "Matcha dingin dengan layer pink berry yang ringan dan segar.",
   },
   {
     id: "ice-matcha-latte",
     name: "Ice Matcha Latte",
     price: 30000,
-    image: assetUrl("ice-matcha-latte.png"),
+    image: new URL("../assets/ice-matcha-latte.png", import.meta.url).href,
     description: "Matcha latte dingin favorit dengan rasa creamy yang kalem.",
   },
   {
     id: "ice-americano",
     name: "Ice Americano",
     price: 22000,
-    image: assetUrl("ice-americano.png"),
+    image: new URL("../assets/ice-americano.png", import.meta.url).href,
     description: "Americano dingin yang bersih, ringan, dan cocok untuk menemani fokus.",
   },
 ];
@@ -81,19 +76,19 @@ const popularProducts = [
     id: "hot-matcha",
     name: "Matcha Lalu",
     price: 50000,
-    image: assetUrl("popular-matchalalu.png"),
+    image: new URL("../assets/popular-matchalalu.png", import.meta.url).href,
   },
   {
     id: "hot-cappucino",
     name: "Ice Cappuccino",
     price: 35000,
-    image: assetUrl("popular-cappucino.png"),
+    image: new URL("../assets/popular-cappucino.png", import.meta.url).href,
   },
   {
     id: "ice-matcha-latte",
     name: "Ice Matcha Latte",
     price: 35000,
-    image: assetUrl("popular-latte.png"),
+    image: new URL("../assets/popular-latte.png", import.meta.url).href,
   },
 ];
 
@@ -587,7 +582,7 @@ function LoadingScreen() {
   return (
     <section className="screen loading-screen no-nav" aria-label="Loading el Lotus">
       <div className="loading-content">
-        <img className="loading-logo" src={assets.logo} alt="Logo el Lotus" />
+        <img className="loading-logo" src={assets.logoMark} alt="Logo el Lotus" />
         <h1>el <strong>Lotus</strong></h1>
         <p>a place to bloom,<br />chill, and connect</p>
       </div>
@@ -632,7 +627,7 @@ function HomeScreen({ cartCount, goTo, handleQuickAction, openProductDetail, pus
     <section className="screen home-screen">
       <header className="topbar">
         <button className="brand-lockup" onClick={() => goTo("home")} aria-label="Beranda el Lotus">
-          <img src={assets.logo} alt="" />
+          <img src={assets.logoMark} alt="" />
           <span>el <strong>Lotus</strong></span>
         </button>
         <div className="top-actions">
@@ -651,13 +646,18 @@ function HomeScreen({ cartCount, goTo, handleQuickAction, openProductDetail, pus
       </section>
 
       <section className="home-hero" aria-label="Tagline el Lotus">
-        <img src={assets.homeHero} alt="Interior cafe el Lotus" />
         <div className="home-hero-copy">
-          <h2>&ldquo;a place to bloom, chill, and connect&rdquo;</h2>
+          <span>fresh mood, fresh cup</span>
+          <h2>Ngopi biar mekar.</h2>
+          <p>a place to bloom, chill, and connect</p>
           <button className="soft-pill" onClick={() => goTo("order")}>
-            <span>explore el Lotus</span>
+            <span>Mulai pesan</span>
             <span aria-hidden="true">{"\u203A"}</span>
           </button>
+        </div>
+        <div className="hero-mark" aria-hidden="true">
+          <img src={assets.logoMark} alt="" />
+          <span>Lotus<br />mood</span>
         </div>
       </section>
       <div className="slider-dots" aria-hidden="true"><span className="active" /><span /><span /></div>
@@ -673,11 +673,12 @@ function HomeScreen({ cartCount, goTo, handleQuickAction, openProductDetail, pus
       </div>
 
       <section className="reward-banner">
-        <div className="reward-card-art"><img src={assets.logo} alt="" /></div>
+        <div className="reward-card-art"><img src={assets.logoMark} alt="" /></div>
         <div>
-          <span className="mini-brand">el Lotus</span>
+          <span className="mini-brand">Lotus Pass</span>
           <h2>earn points, bloom more!</h2>
-          <p>air, air apa yang semangat? airobik xixixi</p>
+          <p>3 orders lagi untuk voucher minuman favoritmu.</p>
+          <div className="reward-meter" aria-hidden="true"><span /></div>
         </div>
         <button onClick={() => pushToast("Voucher loyalty siap dipakai di checkout.")} aria-label="Buka rewards">{"\u203A"}</button>
       </section>
@@ -704,6 +705,11 @@ function HomeScreen({ cartCount, goTo, handleQuickAction, openProductDetail, pus
 function OrderScreen({ selectedOutlet, outletOpen, setOutletOpen, selectOutlet, openProductDetail }) {
   return (
     <section className="screen order-screen">
+      <header className="order-top">
+        <span>Pick your spot</span>
+        <h1>Pesan dari outlet terdekat.</h1>
+      </header>
+
       <div className="location-box">
         <button className="location-toggle" onClick={() => setOutletOpen((open) => !open)} aria-expanded={outletOpen} aria-controls="outlet-list">
           <span>{selectedOutlet || "Pilih Lokasi"}</span>
@@ -729,8 +735,11 @@ function OrderScreen({ selectedOutlet, outletOpen, setOutletOpen, selectOutlet, 
       <img className="store-hero" src={assets.storeHero} alt="Tampak depan outlet el Lotus" />
 
       <div className="menu-title">
-        <h1>Menu el <strong>Lotus</strong></h1>
-        <img src={assets.logo} alt="" />
+        <div>
+          <span>{selectedOutlet.replace("el Lotus ", "")}</span>
+          <h1>Menu el <strong>Lotus</strong></h1>
+        </div>
+        <img src={assets.logoMark} alt="" />
       </div>
 
       <div className="menu-grid">
@@ -740,7 +749,10 @@ function OrderScreen({ selectedOutlet, outletOpen, setOutletOpen, selectOutlet, 
               <h2>{item.name}</h2>
               <img src={item.image} alt={item.name} />
             </button>
-            <button className="add-menu-button" onClick={() => openProductDetail(item.id)}>Tambahkan</button>
+            <div className="menu-card-footer">
+              <span>{rupiah(item.price)}</span>
+              <button className="add-menu-button" onClick={() => openProductDetail(item.id)}>Tambah</button>
+            </div>
           </article>
         ))}
       </div>
@@ -756,7 +768,16 @@ function DetailScreen({ product, detail, setDetail, detailSubtotal, addCurrentPr
     <>
       <section className="screen detail-screen no-nav">
         <button className="floating-back" onClick={() => goTo("order")} aria-label="Kembali ke menu"><Icon name="arrowLeft" /></button>
-        <img className="detail-hero" src={product.detailImage || product.image} alt={product.name} />
+        <div className="detail-hero">
+          <div className="detail-hero-copy">
+            <span>el Lotus order</span>
+            <h2>{product.name}</h2>
+            <p>Atur ukuran, rasa, es, dan topping sesuai mood hari ini.</p>
+          </div>
+          <div className="detail-hero-art">
+            <img src={product.image} alt={product.name} />
+          </div>
+        </div>
 
         <div className="detail-intro">
           <div>
