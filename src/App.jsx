@@ -14,6 +14,7 @@ import {
 } from "./data/catalog.js";
 import { ActivityScreen } from "./screens/ActivityScreen.jsx";
 import { CheckoutScreen } from "./screens/CheckoutScreen.jsx";
+import { DesktopLanding } from "./screens/DesktopLanding.jsx";
 import { DetailScreen } from "./screens/DetailScreen.jsx";
 import { HomeScreen } from "./screens/HomeScreen.jsx";
 import { LoadingScreen } from "./screens/LoadingScreen.jsx";
@@ -373,10 +374,11 @@ export default function App() {
     </>
   );
 
-  if (screen === "loading") return <LoadingScreen />;
+  const renderMobileScreen = () => {
+    if (screen === "loading") return <LoadingScreen />;
 
-  if (screen === "home") {
-    return chrome(
+    if (screen === "home") {
+      return chrome(
       <HomeScreen
         cartCount={cartCount}
         goTo={goTo}
@@ -384,11 +386,11 @@ export default function App() {
         openProductDetail={openProductDetail}
         openModal={openModal}
       />,
-    );
-  }
+      );
+    }
 
-  if (screen === "order") {
-    return chrome(
+    if (screen === "order") {
+      return chrome(
       <OrderScreen
         selectedOutlet={selectedOutlet}
         outletOpen={outletOpen}
@@ -399,11 +401,11 @@ export default function App() {
         cartTotal={cartTotal}
         goTo={goTo}
       />,
-    );
-  }
+      );
+    }
 
-  if (screen === "detail") {
-    return chrome(
+    if (screen === "detail") {
+      return chrome(
       <DetailScreen
         product={product}
         detail={detail}
@@ -413,11 +415,11 @@ export default function App() {
         goTo={goTo}
       />,
       true,
-    );
-  }
+      );
+    }
 
-  if (screen === "checkout") {
-    return chrome(
+    if (screen === "checkout") {
+      return chrome(
       <CheckoutScreen
         selectedOutlet={selectedOutlet}
         selectedAddress={selectedAddress}
@@ -433,11 +435,11 @@ export default function App() {
         openModal={openModal}
       />,
       true,
-    );
-  }
+      );
+    }
 
-  if (screen === "payment") {
-    return chrome(
+    if (screen === "payment") {
+      return chrome(
       <PaymentScreen
         selectedPayment={selectedPayment}
         setSelectedPayment={setSelectedPayment}
@@ -446,11 +448,11 @@ export default function App() {
         goTo={goTo}
       />,
       true,
-    );
-  }
+      );
+    }
 
-  if (screen === "qris") {
-    return chrome(
+    if (screen === "qris") {
+      return chrome(
       <QrisScreen
         cartTotal={cartTotal}
         qrisSeconds={qrisSeconds}
@@ -460,13 +462,13 @@ export default function App() {
         goTo={goTo}
       />,
       true,
-    );
-  }
+      );
+    }
 
-  if (screen === "success") return <SuccessScreen />;
+    if (screen === "success") return <SuccessScreen />;
 
-  if (screen === "activity") {
-    return chrome(
+    if (screen === "activity") {
+      return chrome(
       <ActivityScreen
         orders={orders}
         activityTab={activityTab}
@@ -475,8 +477,18 @@ export default function App() {
         openModal={openModal}
         completeOrder={completeOrderFromActivity}
       />,
-    );
-  }
+      );
+    }
 
-  return chrome(<ProfileScreen openModal={openModal} orders={orders} goTo={goTo} setActivityTab={setActivityTab} />);
+    return chrome(<ProfileScreen openModal={openModal} orders={orders} goTo={goTo} setActivityTab={setActivityTab} />);
+  };
+
+  return (
+    <>
+      <div className="mobile-app-shell">
+        <div className="phone-shell">{renderMobileScreen()}</div>
+      </div>
+      <DesktopLanding />
+    </>
+  );
 }
